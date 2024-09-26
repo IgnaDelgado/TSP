@@ -11,7 +11,7 @@ using namespace std;
 void finMinWeight(vector<vector<int>> graph, string* nameLocations)
 {
 	// Inicializar todos los nodos como no visitados
-	vector<bool> visited (V,false); 
+	vector<bool> visited(V, false);
 	for (int i = 0; i < V; i++)
 		visited[i] = 0;
 
@@ -53,40 +53,97 @@ void finMinWeight(vector<vector<int>> graph, string* nameLocations)
 		// Marcar el nodo actual como visitado
 		visited[currPos] = 1;
 		path[count] = currPos;
-		count++;	
+		count++;
 	}
-	
+
 	// Sumar el ultimo nodo con el primero para completar el ciclo
 	minWeight += graph[currPos][0];
 
 	// Imprimir el camino mas corto
 	cout << "El camino mas corto es: ";
 	for (int i = 0; i < V; i++)
-		cout << nameLocations[path[i]] << " ";
+		cout << nameLocations[path[i]] << " -> ";
 	cout << nameLocations[path[0]] << endl;
 
 	// Imprimir el peso total del camino mas corto
 	cout << "El peso total del camino mas corto es: " << minWeight << endl;
 }
-
-
-int main() 
+/*
+bool completeVisited(vector<bool> visited(V, false)){
+	for(int i=0; i<V){
+		if(visited[i] == false){
+			return false
+		}
+	}
+}
+*/
+// Algoritmo vecino mas cercano 
+void nearestNeighbor(vector<vector<int>> graph, string* nameLocations)
 {
-	cout << "Algoritmo fuerza bruta" << endl;
-	vector<vector<int>> graph(V, vector<int>(V ,0));
+	// Inicializar todos los nodos como no visitados 
+	vector<bool> visited(V, false);
+
+	// Nodo actual 
+	int currPos = 0;
+	// Marcar el nodo actual como visitado 
+
+	visited[currPos] = true;
+
+	// Numero de nodos visitados 
+	int count = 1;
+
+	//Encontrar el vecino mas cercano 
+	int min = INT_MAX;
+	int	nextNode = -1;
+	
+	cout << nameLocations[0];
+
+	for (int i = 0; i < V; i++) {
+		if (count == V) {
+			visited[0] = false;
+		}
+
+
+		for (int j = 0; j < V; j++) {
+			if (graph[currPos][j] != 0 && visited[j] == false) {
+				if (graph[currPos][j] < min) {
+					min = graph[currPos][j];
+					nextNode = j;
+				}
+			}
+		}
+		visited[nextNode] = true;
+		currPos = nextNode;
+		count++;
+		cout << " -> " << nameLocations[nextNode] ;
+		min = INT_MAX;
+
+	}
+
+
+
+}
+int main() {
+	vector<vector<int>> graph(V, vector<int>(V, 0));
 	string nameLocations[] = { "Cordoba", "Santiago del estero", "Catamarca", "Tucuman", "Salta" };
 	graph =
 	{
 		//	Cor		San		Cat		Tuc		Sal 
-			{0,		506,	441,	0,		877},
+			{0,		506,	441,	0,		891},
 			{506,	0,		221,	112,	639},
 			{441,	221,    0,      232,    0},
 			{0,     112,    232,    0,      302},
-			{877,   639,    0,		302,	0}
+			{891,   639,    0,		302,	0}
 	};
 
 	// encontrar el camino más corto TSP
-	finMinWeight(graph, nameLocations);	
+	cout << "FUERZA BRUTA " << endl;
+	finMinWeight(graph, nameLocations);
+	cout << endl;
+
+	cout << "VECINO MAS CERCANO" << endl;
+	nearestNeighbor(graph, nameLocations);
+	cout << endl;
 
 	return 0;
 }
